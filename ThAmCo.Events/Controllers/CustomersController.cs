@@ -15,6 +15,7 @@ namespace ThAmCo.Events.Controllers
 
         public CustomersController(EventsDbContext context)
         {
+            //Testing connection
             _context = context;
         }
 
