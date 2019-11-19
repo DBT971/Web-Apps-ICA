@@ -116,7 +116,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GuestBookingExists(guestBooking.CustomerId))
+                    if (!GuestBookingExists(guestBooking.CustomerId, guestBooking.EventId))
                     {
                         return NotFound();
                     }
@@ -132,7 +132,7 @@ namespace ThAmCo.Events.Controllers
             return View(guestBooking);
         }
 
-        // GET: GuestBookings/Delete/5
+        // GET: GuestBookings/Delete/5?5
         public async Task<IActionResult> Delete(int? id, int? id2)
         {
             if (id == null || id2 == null)
@@ -143,7 +143,8 @@ namespace ThAmCo.Events.Controllers
             var guestBooking = await _context.Guests
                 .Include(g => g.Customer)
                 .Include(g => g.Event)
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
+                .FirstOrDefaultAsync(m => m.CustomerId == id && m.EventId == id2);
+
             if (guestBooking == null)
             {
                 return NotFound();
@@ -155,17 +156,19 @@ namespace ThAmCo.Events.Controllers
         // POST: GuestBookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int id2)
         {
-            var guestBooking = await _context.Guests.FindAsync(id);
+            var guestBooking = await _context.Guests.FindAsync(id, id2);
+
+
             _context.Guests.Remove(guestBooking);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GuestBookingExists(int id)
+        private bool GuestBookingExists(int id, int id2)
         {
-            return _context.Guests.Any(e => e.CustomerId == id);
+            return _context.Guests.Any(e => e.CustomerId == id && e.EventId == id2);
         }
     }
 }
