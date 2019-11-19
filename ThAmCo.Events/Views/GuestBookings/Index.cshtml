@@ -10,9 +10,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<p>
-    Number of Guests: @Html.
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -29,23 +27,30 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Attended)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.CustomerId, id2 = item.EventId }) |
-                @Html.ActionLink("Details", "Details", new {id = item.CustomerId, id2=item.EventId}) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CustomerId, id2=item.EventId})
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Event.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Attended)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.CustomerId, id2 = item.EventId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.CustomerId, id2 = item.EventId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.CustomerId, id2 = item.EventId })
+                </td>
+            </tr>
+        }
     </tbody>
+
+    <p>
+        Number of Guests: @Model.ToList().Count() <br>
+        Number of Attended Guests: @Model.Where(m => m.Attended).ToList().Count()
+
+    </p>
 </table>

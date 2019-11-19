@@ -18,7 +18,7 @@ namespace ThAmCo.Events.Controllers
             _context = context;
         }
 
-        // GET: GuestBookings
+        // GET: GuestBookings/5
         public async Task<IActionResult> Index(int? id)
         {
             var eventsDbContext = _context.Guests.Include(g => g.Customer).Include(g => g.Event).AsQueryable();
