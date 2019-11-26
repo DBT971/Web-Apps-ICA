@@ -21,6 +21,7 @@ namespace ThAmCo.Events.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
+            //Test
             return View(await _context.Customers.ToListAsync());
         }
 
