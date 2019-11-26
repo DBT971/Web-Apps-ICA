@@ -72,8 +72,11 @@ namespace ThAmCo.Events.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", guestBooking.CustomerId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", guestBooking.EventId);
+            
             return View(guestBooking);
         }
 
@@ -156,10 +159,12 @@ namespace ThAmCo.Events.Controllers
         // POST: GuestBookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id, int id2)
+        public async Task<IActionResult> DeleteConfirmed(int id, [Bind("CustomerId,EventId")] GuestBooking guestBooking)
         {
-            var guestBooking = await _context.Guests.FindAsync(id, id2);
-
+            guestBooking = await _context.Guests
+                .Include(g => g.Customer)
+                .Include(g => g.Event)
+                .FirstOrDefaultAsync(m => m.CustomerId == id);
 
             _context.Guests.Remove(guestBooking);
             await _context.SaveChangesAsync();
