@@ -123,7 +123,6 @@ namespace ThAmCo.Events.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(@event);
         }
 
         // GET: Events/Delete/5

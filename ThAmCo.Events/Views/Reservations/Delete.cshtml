@@ -1,0 +1,39 @@
+﻿@model ThAmCo.Events.Data.Reservation
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Reservation</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EventDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EventDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.VenueCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.VenueCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.WhenMade)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WhenMade)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StaffId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StaffId)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Reference" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
