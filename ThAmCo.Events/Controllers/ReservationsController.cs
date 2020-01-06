@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using ThAmCo.Events.Services;
 
 namespace ThAmCo.Events.Controllers
 {
@@ -14,18 +17,28 @@ namespace ThAmCo.Events.Controllers
         //GET: Reservations
         public async Task<ActionResult> Index()
         {
-            var client = new HttpClient
-            {
-                BaseAddress = new Uri("https://localhost:23652")
-            };
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("http://localhost:23652");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-            client.Timeout = TimeSpan.FromSeconds(5);
 
-            var response = await client.GetAsync("api/reservations/getreservation");
-            response.EnsureSuccessStatusCode();
-            IEnumerable<ThAmCo.Events.Services.ReservationGetDto> reservations = await response.Content.ReadAsAsync<IEnumerable<ThAmCo.Events.Services.ReservationGetDto>>();
+            ReservationPostDto req = new ReservationPostDto
+            {
+                EventDate = @event.Date,
+                VenueCode = VenueCode,
+                StaffId = "staff"
+            };
+            //var client = new HttpClient
+            //{
+            //    BaseAddress = new Uri("https://localhost:23652")
+            //};
+            //client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+            //client.Timeout = TimeSpan.FromSeconds(5);
 
-            return View(reservations);
+            //var response = await client.GetAsync("api/reservations/getreservation");
+            //response.EnsureSuccessStatusCode();
+            //IEnumerable<ThAmCo.Events.Services.ReservationGetDto> reservations = await response.Content.ReadAsAsync<IEnumerable<ThAmCo.Events.Services.ReservationGetDto>>();
+
+            //return View(reservations);
         }
 
         //GET: Reservations/Details/
