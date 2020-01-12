@@ -1,26 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ThAmCo.Events.Services
 {
-
     public class ReservationPostDto
     {
-        public string Reference { get; set; }
-
-        [DataType(DataType.Date)]
+        [Required, DataType(DataType.Date)]
         public DateTime EventDate { get; set; }
 
+        [Required, MinLength(5), MaxLength(5)]
         public string VenueCode { get; set; }
 
-        public DateTime WhenMade { get; set; }
-
+        [Required]
         public string StaffId { get; set; }
-
-
     }
 }
