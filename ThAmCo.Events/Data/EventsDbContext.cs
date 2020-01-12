@@ -70,7 +70,6 @@ namespace ThAmCo.Events.Data
             }
         }
 
-        public DbSet<ThAmCo.Events.Data.Reservation> Reservation { get; set; }
 
     }
 }

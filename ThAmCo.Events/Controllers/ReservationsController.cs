@@ -8,37 +8,49 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ThAmCo.Events.Data;
 using ThAmCo.Events.Services;
 
 namespace ThAmCo.Events.Controllers
 {
+
+
     public class ReservationsController : Controller
     {
-        //GET: Reservations
-        public async Task<ActionResult> Index()
-        {
-            //HttpClient client = new HttpClient();
-            //client.BaseAddress = new System.Uri("http://localhost:23652");
-            //client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
 
-            //ReservationPostDto req = new ReservationPostDto
-            //{
-            //    EventDate = @event.Date,
-            //    VenueCode = VenueCode,
-            //    StaffId = "staff"
-            //};
-            var client = new HttpClient
+        private readonly EventsDbContext _context;
+
+        public ReservationsController(EventsDbContext context)
+        {
+            _context = context;
+        }
+
+        //GET: Reservations
+        public async Task<ActionResult> Index(int? id)
+        {
+            if(id == null)
             {
-                BaseAddress = new Uri("https://localhost:23652")
-            };
+                return BadRequest();
+            }
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("http://localhost:23652");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+            ReservationPostDto req = new ReservationPostDto
+            {
+                EventDate = new DateTime(2018,6,6),
+                VenueCode = "",
+                StaffId = "staff"
+            };
+
+            HttpResponseMessage response = await client.PostAsJsonAsync("api/Reservations", req);
+
             client.Timeout = TimeSpan.FromSeconds(5);
 
-            var response = await client.GetAsync("api/reservations/");
             response.EnsureSuccessStatusCode();
-            IEnumerable<ThAmCo.Events.Services.ReservationGetDto> reservations = await response.Content.ReadAsAsync<IEnumerable<ThAmCo.Events.Services.ReservationGetDto>>();
 
-            return View(reservations);
+            return View(req);
         }
 
         //GET: Reservations/Details/

@@ -1,10 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ThAmCo.Events.Services
 {
-    public class ReservationGetDto
+
+    public class ReservationPostDto
     {
         public string Reference { get; set; }
 
@@ -16,6 +20,7 @@ namespace ThAmCo.Events.Services
         public DateTime WhenMade { get; set; }
 
         public string StaffId { get; set; }
+
 
     }
 }

@@ -1,26 +1,36 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ThAmCo.Events.Data
+namespace ThAmCo.Events.Models
 {
-    public class Reservation
+    public class ReservationModel
     {
         public int Id { get; set; }
 
         [Key, MinLength(13), MaxLength(13)]
+        [Display(Name = "Reservation Reference")]
         public string Reference { get; set; }
 
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd MMMM yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EventDate { get; set; }
 
         [Required]
+        [Display(Name = "Venue Code")]
         public string VenueCode { get; set; }
 
+        [Display(Name = "Reservation Made")]
         public DateTime WhenMade { get; set; }
 
         [Required]
+        [Display(Name = "Reservation Staff")]
         public string StaffId { get; set; }
+
     }
+
+    
 }

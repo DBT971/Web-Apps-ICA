@@ -38,7 +38,12 @@
             Guests
         </dt>
         <dd>
-           @Html.DisplayFor(model => model.Bookings)
+            @foreach (var item in Model.Bookings)
+            {
+            <li>
+                @Html.DisplayFor(modelItem => item.Customer)
+            </li>
+            }
         </dd>
     </dl>
 </div>
