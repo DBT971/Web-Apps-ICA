@@ -7,6 +7,8 @@ namespace ThAmCo.Events.Data
 {
     public class Reservation
     {
+        public int Id { get; set; }
+
         [Key, MinLength(13), MaxLength(13)]
         public string Reference { get; set; }
 
