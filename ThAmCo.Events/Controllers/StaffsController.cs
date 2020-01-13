@@ -9,23 +9,22 @@ using ThAmCo.Events.Data;
 
 namespace ThAmCo.Events.Controllers
 {
-    public class CustomersController : Controller
+    public class StaffsController : Controller
     {
         private readonly EventsDbContext _context;
 
-        public CustomersController(EventsDbContext context)
+        public StaffsController(EventsDbContext context)
         {
             _context = context;
         }
 
-        // GET: Customers
+        // GET: Staffs
         public async Task<IActionResult> Index()
         {
-            //Test
-            return View(await _context.Customers.ToListAsync());
+            return View(await _context.Staff.ToListAsync());
         }
 
-        // GET: Customers/Details/5
+        // GET: Staffs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +32,39 @@ namespace ThAmCo.Events.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
+            var staff = await _context.Staff
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
+            if (staff == null)
             {
                 return NotFound();
             }
 
-            return View(customer);
+            return View(staff);
         }
 
-        // GET: Customers/Create
+        // GET: Staffs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Customers/Create
+        // POST: Staffs/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Surname,FirstName,Email")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Id,Surname,FirstName,Email,FirstAider")] Staff staff)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(customer);
+                _context.Add(staff);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return View(staff);
         }
 
-        // GET: Customers/Edit/5
+        // GET: Staffs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +72,22 @@ namespace ThAmCo.Events.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            var staff = await _context.Staff.FindAsync(id);
+            if (staff == null)
             {
                 return NotFound();
             }
-            return View(customer);
+            return View(staff);
         }
 
-        // POST: Customers/Edit/5
+        // POST: Staffs/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Surname,FirstName,Email")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Surname,FirstName,Email,FirstAider")] Staff staff)
         {
-            if (id != customer.Id)
+            if (id != staff.Id)
             {
                 return NotFound();
             }
@@ -97,12 +96,12 @@ namespace ThAmCo.Events.Controllers
             {
                 try
                 {
-                    _context.Update(customer);
+                    _context.Update(staff);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.Id))
+                    if (!StaffExists(staff.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +112,10 @@ namespace ThAmCo.Events.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return View(staff);
         }
 
-        // GET: Customers/Delete/5
+        // GET: Staffs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +123,30 @@ namespace ThAmCo.Events.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
+            var staff = await _context.Staff
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
+            if (staff == null)
             {
                 return NotFound();
             }
 
-            return View(customer);
+            return View(staff);
         }
 
-        // POST: Customers/Delete/5
+        // POST: Staffs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            
+            var staff = await _context.Staff.FindAsync(id);
+            _context.Staff.Remove(staff);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CustomerExists(int id)
+        private bool StaffExists(int id)
         {
-            return _context.Customers.Any(e => e.Id == id);
+            return _context.Staff.Any(e => e.Id == id);
         }
     }
 }

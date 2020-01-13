@@ -35,6 +35,9 @@ namespace ThAmCo.Events.Controllers
                 return NotFound();
             }
 
+            /** This is what shows the guests as a table on the events details page
+             * 
+             */
             var @event = await _context.Events
                 .Include(b => b.Bookings)
                 .ThenInclude(c => c.Customer)
