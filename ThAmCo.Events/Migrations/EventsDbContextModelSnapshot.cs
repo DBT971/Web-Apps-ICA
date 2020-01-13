@@ -118,6 +118,12 @@ namespace ThAmCo.Events.Migrations
                     b.HasKey("StaffId");
 
                     b.ToTable("Staff");
+
+                    b.HasData(
+                        new { StaffId = 1, Email = "Todd.Howard@Bethesda.com", FirstAider = false, FirstName = "Todd", Surname = "Howard" },
+                        new { StaffId = 2, Email = "R_Keev@Oblivion.tes", FirstAider = false, FirstName = "Reanu", Surname = "Keeves" },
+                        new { StaffId = 3, Email = "Hodd.Toward@Bethesda.ira", FirstAider = false, FirstName = "Spiff", Surname = "Brit" }
+                    );
                 });
 
             modelBuilder.Entity("ThAmCo.Events.Data.StaffBooking", b =>

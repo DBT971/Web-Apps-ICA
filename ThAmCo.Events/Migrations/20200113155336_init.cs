@@ -140,6 +140,17 @@ namespace ThAmCo.Events.Migrations
 
             migrationBuilder.InsertData(
                 schema: "thamco.events",
+                table: "Staff",
+                columns: new[] { "StaffId", "Email", "FirstAider", "FirstName", "Surname" },
+                values: new object[,]
+                {
+                    { 1, "Todd.Howard@Bethesda.com", false, "Todd", "Howard" },
+                    { 2, "R_Keev@Oblivion.tes", false, "Reanu", "Keeves" },
+                    { 3, "Hodd.Toward@Bethesda.ira", false, "Spiff", "Brit" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "thamco.events",
                 table: "Guests",
                 columns: new[] { "CustomerId", "EventId", "Attended" },
                 values: new object[,]

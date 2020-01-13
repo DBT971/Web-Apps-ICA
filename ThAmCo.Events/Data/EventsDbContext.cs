@@ -68,6 +68,12 @@ namespace ThAmCo.Events.Data
                     new Customer { Id = 3, Surname = "Jellybeans", FirstName = "Jin", Email = "jin@example.com" }
                 );
 
+                builder.Entity<Staff>().HasData(
+                    new Staff { StaffId = 1, Surname = "Howard", FirstName = "Todd", Email = "Todd.Howard@Bethesda.com"},
+                    new Staff { StaffId = 2, Surname = "Keeves", FirstName = "Reanu", Email = "R_Keev@Oblivion.tes" },
+                    new Staff { StaffId = 3, Surname = "Brit", FirstName = "Spiff", Email = "Hodd.Toward@Bethesda.ira"}
+                );
+
                 builder.Entity<Event>().HasData(
                     new Event { Id = 1, Title = "Bob's Big 50", Date = new DateTime(2016, 4, 12), Duration = new TimeSpan(6, 0, 0), TypeId = "PTY" },
                     new Event { Id = 2, Title = "Best Wedding Yet", Date = new DateTime(2018, 12, 1), Duration = new TimeSpan(12, 0, 0), TypeId = "WED" }
