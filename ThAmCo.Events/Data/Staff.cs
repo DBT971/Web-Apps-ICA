@@ -8,7 +8,7 @@ namespace ThAmCo.Events.Data
 {
     public class Staff
     {
-        public int Id { get; set; }
+        public int StaffId { get; set; }
 
         [Required]
         public string Surname { get; set; }
@@ -21,6 +21,8 @@ namespace ThAmCo.Events.Data
         public string Email { get; set; }
 
         public bool FirstAider { get; set; }
+
+        public List<StaffBooking> StaffBooking { get; set; }
 
     }
 }

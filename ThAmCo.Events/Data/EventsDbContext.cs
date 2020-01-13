@@ -11,6 +11,10 @@ namespace ThAmCo.Events.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<GuestBooking> Guests { get; set; }
 
+        public DbSet<ThAmCo.Events.Data.Staff> Staff { get; set; }
+
+        public DbSet<ThAmCo.Events.Data.StaffBooking> StaffBooking { get; set; }
+
         private IHostingEnvironment HostEnv { get; }
 
         public EventsDbContext(DbContextOptions<EventsDbContext> options,
@@ -33,10 +37,18 @@ namespace ThAmCo.Events.Data
             builder.Entity<GuestBooking>()
                    .HasKey(b => new { b.CustomerId, b.EventId });
 
+            builder.Entity<StaffBooking>()
+                   .HasKey(b => new { b.StaffId, b.EventId });
+
             builder.Entity<Customer>()
                    .HasMany(c => c.Bookings)
                    .WithOne(b => b.Customer)
                    .HasForeignKey(b => b.CustomerId);
+
+            builder.Entity<Staff>()
+                   .HasMany(c => c.StaffBooking)
+                   .WithOne(b => b.Staff)
+                   .HasForeignKey(b => b.StaffId);
 
             builder.Entity<Event>()
                    .HasMany(e => e.Bookings)
@@ -70,9 +82,6 @@ namespace ThAmCo.Events.Data
             }
         }
 
-        public DbSet<ThAmCo.Events.Data.Staff> Staff { get; set; }
-
-        public DbSet<ThAmCo.Events.Data.StaffBooking> StaffBooking { get; set; }
 
 
     }

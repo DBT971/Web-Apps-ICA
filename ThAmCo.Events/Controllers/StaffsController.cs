@@ -33,7 +33,7 @@ namespace ThAmCo.Events.Controllers
             }
 
             var staff = await _context.Staff
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.StaffId == id);
             if (staff == null)
             {
                 return NotFound();
@@ -87,7 +87,7 @@ namespace ThAmCo.Events.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Surname,FirstName,Email,FirstAider")] Staff staff)
         {
-            if (id != staff.Id)
+            if (id != staff.StaffId)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StaffExists(staff.Id))
+                    if (!StaffExists(staff.StaffId))
                     {
                         return NotFound();
                     }
@@ -124,7 +124,7 @@ namespace ThAmCo.Events.Controllers
             }
 
             var staff = await _context.Staff
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.StaffId == id);
             if (staff == null)
             {
                 return NotFound();
@@ -146,7 +146,7 @@ namespace ThAmCo.Events.Controllers
 
         private bool StaffExists(int id)
         {
-            return _context.Staff.Any(e => e.Id == id);
+            return _context.Staff.Any(e => e.StaffId == id);
         }
     }
 }

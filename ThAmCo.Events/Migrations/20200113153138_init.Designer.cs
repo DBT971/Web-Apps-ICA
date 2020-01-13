@@ -7,18 +7,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThAmCo.Events.Data;
 
-namespace ThAmCo.Events.Data.Migrations
+namespace ThAmCo.Events.Migrations
 {
     [DbContext(typeof(EventsDbContext))]
-    [Migration("20181029103724_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200113153138_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("thamco.events")
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -66,6 +66,8 @@ namespace ThAmCo.Events.Data.Migrations
                         .IsFixedLength(true)
                         .HasMaxLength(3);
 
+                    b.Property<string>("VenueCode");
+
                     b.HasKey("Id");
 
                     b.ToTable("Events");
@@ -98,6 +100,41 @@ namespace ThAmCo.Events.Data.Migrations
                     );
                 });
 
+            modelBuilder.Entity("ThAmCo.Events.Data.Staff", b =>
+                {
+                    b.Property<int>("StaffId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<bool>("FirstAider");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired();
+
+                    b.Property<string>("Surname")
+                        .IsRequired();
+
+                    b.HasKey("StaffId");
+
+                    b.ToTable("Staff");
+                });
+
+            modelBuilder.Entity("ThAmCo.Events.Data.StaffBooking", b =>
+                {
+                    b.Property<int>("StaffId");
+
+                    b.Property<int>("EventId");
+
+                    b.HasKey("StaffId", "EventId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("StaffBooking");
+                });
+
             modelBuilder.Entity("ThAmCo.Events.Data.GuestBooking", b =>
                 {
                     b.HasOne("ThAmCo.Events.Data.Customer", "Customer")
@@ -108,6 +145,19 @@ namespace ThAmCo.Events.Data.Migrations
                     b.HasOne("ThAmCo.Events.Data.Event", "Event")
                         .WithMany("Bookings")
                         .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ThAmCo.Events.Data.StaffBooking", b =>
+                {
+                    b.HasOne("ThAmCo.Events.Data.Event", "Event")
+                        .WithMany("StaffBookings")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ThAmCo.Events.Data.Staff", "Staff")
+                        .WithMany("StaffBooking")
+                        .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

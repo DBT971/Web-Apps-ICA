@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ThAmCo.Events.Data.Migrations
+namespace ThAmCo.Events.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -37,11 +37,29 @@ namespace ThAmCo.Events.Data.Migrations
                     Title = table.Column<string>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Duration = table.Column<TimeSpan>(nullable: true),
-                    TypeId = table.Column<string>(fixedLength: true, maxLength: 3, nullable: false)
+                    TypeId = table.Column<string>(fixedLength: true, maxLength: 3, nullable: false),
+                    VenueCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Staff",
+                schema: "thamco.events",
+                columns: table => new
+                {
+                    StaffId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Surname = table.Column<string>(nullable: false),
+                    FirstName = table.Column<string>(nullable: false),
+                    Email = table.Column<string>(nullable: false),
+                    FirstAider = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Staff", x => x.StaffId);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,6 +90,33 @@ namespace ThAmCo.Events.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "StaffBooking",
+                schema: "thamco.events",
+                columns: table => new
+                {
+                    StaffId = table.Column<int>(nullable: false),
+                    EventId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StaffBooking", x => new { x.StaffId, x.EventId });
+                    table.ForeignKey(
+                        name: "FK_StaffBooking_Events_EventId",
+                        column: x => x.EventId,
+                        principalSchema: "thamco.events",
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StaffBooking_Staff_StaffId",
+                        column: x => x.StaffId,
+                        principalSchema: "thamco.events",
+                        principalTable: "Staff",
+                        principalColumn: "StaffId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 schema: "thamco.events",
                 table: "Customers",
@@ -86,11 +131,11 @@ namespace ThAmCo.Events.Data.Migrations
             migrationBuilder.InsertData(
                 schema: "thamco.events",
                 table: "Events",
-                columns: new[] { "Id", "Date", "Duration", "Title", "TypeId" },
+                columns: new[] { "Id", "Date", "Duration", "Title", "TypeId", "VenueCode" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2016, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 6, 0, 0, 0), "Bob's Big 50", "PTY" },
-                    { 2, new DateTime(2018, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 12, 0, 0, 0), "Best Wedding Yet", "WED" }
+                    { 1, new DateTime(2016, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 6, 0, 0, 0), "Bob's Big 50", "PTY", null },
+                    { 2, new DateTime(2018, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 12, 0, 0, 0), "Best Wedding Yet", "WED", null }
                 });
 
             migrationBuilder.InsertData(
@@ -110,6 +155,12 @@ namespace ThAmCo.Events.Data.Migrations
                 schema: "thamco.events",
                 table: "Guests",
                 column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StaffBooking_EventId",
+                schema: "thamco.events",
+                table: "StaffBooking",
+                column: "EventId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -119,11 +170,19 @@ namespace ThAmCo.Events.Data.Migrations
                 schema: "thamco.events");
 
             migrationBuilder.DropTable(
+                name: "StaffBooking",
+                schema: "thamco.events");
+
+            migrationBuilder.DropTable(
                 name: "Customers",
                 schema: "thamco.events");
 
             migrationBuilder.DropTable(
                 name: "Events",
+                schema: "thamco.events");
+
+            migrationBuilder.DropTable(
+                name: "Staff",
                 schema: "thamco.events");
         }
     }

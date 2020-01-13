@@ -43,10 +43,10 @@
                 @Html.DisplayFor(modelItem => item.FirstAider)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-action="Index" asp-controller="StaffBooking" asp-route-id="@item.Id">Bookings</a>
+                <a asp-action="Edit" asp-route-id="@item.StaffId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.StaffId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.StaffId">Delete</a> |
+                <a asp-action="Index" asp-controller="StaffBooking" asp-route-id="@item.StaffId">Bookings</a>
             </td>
         </tr>
 }

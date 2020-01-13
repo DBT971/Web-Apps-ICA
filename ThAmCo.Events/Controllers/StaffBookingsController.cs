@@ -54,7 +54,7 @@ namespace ThAmCo.Events.Controllers
         // GET: StaffBookings/Create
         public IActionResult Create()
         {
-            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
+            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email");
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title");
             return View();
         }
@@ -64,7 +64,7 @@ namespace ThAmCo.Events.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StaffId,EventId,Attended")] StaffBooking staffBooking)
+        public async Task<IActionResult> Create([Bind("StaffId,EventId")] StaffBooking staffBooking)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace ThAmCo.Events.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email", staffBooking.StaffId);
+            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email", staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
@@ -90,7 +90,7 @@ namespace ThAmCo.Events.Controllers
             {
                 return NotFound();
             }
-            ViewData["StaffId"] = new SelectList(_context.Events, "Id", "Email", staffBooking.StaffId);
+            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email", staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
@@ -127,7 +127,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email",staffBooking.StaffId);
+            ViewData["StaffId"] = new SelectList(_context.Staff, "StaffId", "Email",staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }

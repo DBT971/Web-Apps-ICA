@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThAmCo.Events.Data;
 
-namespace ThAmCo.Events.Data.Migrations
+namespace ThAmCo.Events.Migrations
 {
     [DbContext(typeof(EventsDbContext))]
     partial class EventsDbContextModelSnapshot : ModelSnapshot
@@ -100,7 +100,7 @@ namespace ThAmCo.Events.Data.Migrations
 
             modelBuilder.Entity("ThAmCo.Events.Data.Staff", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("StaffId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -115,28 +115,20 @@ namespace ThAmCo.Events.Data.Migrations
                     b.Property<string>("Surname")
                         .IsRequired();
 
-                    b.HasKey("Id");
+                    b.HasKey("StaffId");
 
                     b.ToTable("Staff");
                 });
 
             modelBuilder.Entity("ThAmCo.Events.Data.StaffBooking", b =>
                 {
-                    b.Property<int>("StaffId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Attended");
+                    b.Property<int>("StaffId");
 
                     b.Property<int>("EventId");
 
-                    b.Property<int?>("StaffId1");
-
-                    b.HasKey("StaffId");
+                    b.HasKey("StaffId", "EventId");
 
                     b.HasIndex("EventId");
-
-                    b.HasIndex("StaffId1");
 
                     b.ToTable("StaffBooking");
                 });
@@ -157,13 +149,14 @@ namespace ThAmCo.Events.Data.Migrations
             modelBuilder.Entity("ThAmCo.Events.Data.StaffBooking", b =>
                 {
                     b.HasOne("ThAmCo.Events.Data.Event", "Event")
-                        .WithMany()
+                        .WithMany("StaffBookings")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ThAmCo.Events.Data.Staff", "Staff")
-                        .WithMany()
-                        .HasForeignKey("StaffId1");
+                        .WithMany("StaffBooking")
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
