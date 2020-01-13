@@ -13,6 +13,6 @@ namespace ThAmCo.Events.Services
         public string VenueCode { get; set; }
 
         [Required]
-        public string StaffId { get; set; }
+        public int StaffId { get; set; }
     }
 }

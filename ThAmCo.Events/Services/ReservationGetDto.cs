@@ -15,7 +15,7 @@ namespace ThAmCo.Events.Services
 
         public DateTime WhenMade { get; set; }
 
-        public string StaffId { get; set; }
+        public int StaffId { get; set; }
 
     }
 }

@@ -19,23 +19,30 @@ namespace ThAmCo.Events.Controllers
         }
 
         // GET: StaffBookings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var eventsDbContext = _context.StaffBooking.Include(s => s.Event);
+            var eventsDbContext = _context.StaffBooking.Include(s => s.Staff).Include(s => s.Event).AsQueryable();
+
+            if (id.HasValue)
+            {
+                eventsDbContext = eventsDbContext.Where(s => s.EventId == id);
+            }
+
             return View(await eventsDbContext.ToListAsync());
         }
 
         // GET: StaffBookings/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? id2)
         {
-            if (id == null)
+            if (id == null || id2 == null)
             {
                 return NotFound();
             }
 
             var staffBooking = await _context.StaffBooking
+                .Include(s => s.Staff)
                 .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.StaffId == id);
+                .FirstOrDefaultAsync(m => m.StaffId == id && m.EventId == id2);
             if (staffBooking == null)
             {
                 return NotFound();
@@ -47,6 +54,7 @@ namespace ThAmCo.Events.Controllers
         // GET: StaffBookings/Create
         public IActionResult Create()
         {
+            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title");
             return View();
         }
@@ -64,14 +72,15 @@ namespace ThAmCo.Events.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email", staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
 
         // GET: StaffBookings/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? id2)
         {
-            if (id == null)
+            if (id == null || id2 == null)
             {
                 return NotFound();
             }
@@ -81,6 +90,7 @@ namespace ThAmCo.Events.Controllers
             {
                 return NotFound();
             }
+            ViewData["StaffId"] = new SelectList(_context.Events, "Id", "Email", staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
@@ -106,7 +116,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StaffBookingExists(staffBooking.StaffId))
+                    if (!StaffBookingExists(staffBooking.StaffId, staffBooking.EventId))
                     {
                         return NotFound();
                     }
@@ -117,21 +127,23 @@ namespace ThAmCo.Events.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email",staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
 
         // GET: StaffBookings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? id2)
         {
-            if (id == null)
+            if (id == null || id2 == null)
             {
                 return NotFound();
             }
 
             var staffBooking = await _context.StaffBooking
+                .Include(s => s.Staff)
                 .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.StaffId == id);
+                .FirstOrDefaultAsync(m => m.StaffId == id && m.EventId == id);
             if (staffBooking == null)
             {
                 return NotFound();
@@ -143,17 +155,21 @@ namespace ThAmCo.Events.Controllers
         // POST: StaffBookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, [Bind("StaffId,EventId")] StaffBooking staffBooking)
         {
-            var staffBooking = await _context.StaffBooking.FindAsync(id);
+            await _context.StaffBooking
+                .Include(s => s.StaffId)
+                .Include(s => s.EventId)
+                .FirstOrDefaultAsync(m => m.StaffId == id);
+
             _context.StaffBooking.Remove(staffBooking);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StaffBookingExists(int id)
+        private bool StaffBookingExists(int id, int id2)
         {
-            return _context.StaffBooking.Any(e => e.StaffId == id);
+            return _context.StaffBooking.Any(e => e.StaffId == id && e.EventId == id2);
         }
     }
 }

@@ -35,8 +35,9 @@ namespace ThAmCo.Events.Controllers
                 return NotFound();
             }
 
-            /** This is what shows the guests as a table on the events details page
-             * 
+            /** This is what shows the guests as a table on the events details page.
+             * The if statement returns not Found as in order to reach that an event would have to exist
+             * with no customers or bookings.
              */
             var @event = await _context.Events
                 .Include(b => b.Bookings)
@@ -58,12 +59,13 @@ namespace ThAmCo.Events.Controllers
         }
 
         // POST: Events/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Date,Duration,TypeId")] Event @event)
         {
+            /** This adds the new event to the the DB Context, and after creating the event returns the user to the index page.
+             *If the new event is not valid, it is returned to the create view with all of the details filled in for usability.
+             */
             if (ModelState.IsValid)
             {
                 _context.Add(@event);
@@ -90,8 +92,6 @@ namespace ThAmCo.Events.Controllers
         }
 
         // POST: Events/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, string Title, TimeSpan Duration, Event @event)
@@ -108,6 +108,8 @@ namespace ThAmCo.Events.Controllers
             }
             else
             {
+                /** This updates the event with the new information from the edit view.
+                 */
                 try
                 {
                     Event e = await _context.Events.FindAsync(id);
@@ -133,6 +135,7 @@ namespace ThAmCo.Events.Controllers
             }
         }
 
+        //GET: Events/ReserveVenue/5
         public async Task<IActionResult> ReserveVenue(int? id)
         {
             if (id == null)
@@ -140,33 +143,42 @@ namespace ThAmCo.Events.Controllers
                 return NotFound();
             }
 
+            //Checks to see if the event exists
             var @event = await _context.Events
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)
             {
                 return NotFound();
             }
-
+               
+            /**
+             * This creates the path for the events controller to follow to get available
+             * venues to reserve
+             */
             HttpClient client = new HttpClient();
-
             var VenueBuilder = new UriBuilder("http://localhost");
             VenueBuilder.Port = 23652;
             VenueBuilder.Path = "api/Availability";
 
+            /**
+             * This creates a query for the venue with the event details to find which
+             * venue is available on the day, for the event type.
+             */
             var VenueQuery = HttpUtility.ParseQueryString(VenueBuilder.Query);
             VenueQuery["eventType"] = @event.TypeId;
             VenueQuery["beginDate"] = @event.Date.ToString("yyyy/MM/dd HH:mm:ss");
             VenueQuery["endDate"] = @event.Date.Add(@event.Duration.Value).ToString("yyyy/MM/dd HH:mm:ss");
-
             VenueBuilder.Query = VenueQuery.ToString();
 
+            //This creates the url for the system to check in order to get the information needed.
             String url = VenueBuilder.ToString();
-
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-            
             HttpResponseMessage response = await client.GetAsync(url);
 
-
+            /**
+             * If the response is  valid, create the new Venue
+             * Else, send a custom error message.
+             */
             if (response.IsSuccessStatusCode)
             {
                 var Venue = await response.Content.ReadAsAsync<IEnumerable<Venue>>();
@@ -176,19 +188,15 @@ namespace ThAmCo.Events.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "You've messed up Jim");
+                ModelState.AddModelError("", "Connection has failed, please try again.");
             }
 
             return View();
         }
 
-        public async Task<IActionResult> ConfirmReservation(int id, string VenueCode)
+        //POST: Events/ReserveVenue/5
+        public async Task<IActionResult> ConfirmReservation(int id, string VenueCode, int StaffId)
         {
-
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var @event = await _context.Events
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -220,7 +228,6 @@ namespace ThAmCo.Events.Controllers
             }
 
             HttpClient client = new HttpClient();
-
             client.BaseAddress = new System.Uri("http://localhost:23652");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
 
@@ -228,7 +235,7 @@ namespace ThAmCo.Events.Controllers
             {
                 EventDate = @event.Date,
                 VenueCode = VenueCode,
-                StaffId = "staff"
+                StaffId = StaffId
             };
 
             HttpResponseMessage response = await client.PostAsJsonAsync("api/Reservations", req);
