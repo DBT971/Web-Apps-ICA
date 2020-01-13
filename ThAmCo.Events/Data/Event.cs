@@ -18,7 +18,6 @@ namespace ThAmCo.Events.Data
         [Required, MaxLength(3), MinLength(3)]
         public string TypeId { get; set; }
 
-
         public List<StaffBooking> StaffBookings { get; set; }
 
         public List<GuestBooking> Bookings { get; set; }

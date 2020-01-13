@@ -25,6 +25,9 @@
                 @Html.DisplayNameFor(model => model.TypeId)
             </th>
             <th>
+                Warnings
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Bookings)
             </th>
             <th>
@@ -47,6 +50,14 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TypeId)
+            </td>
+            <td>
+                @if ((item.StaffBookings.Count() <= item.Bookings.Count() /10 ))
+                {
+                <p>
+                    Warning: There is not enough staff at the event
+                </p>
+                }
             </td>
             <td>
                 @item.Bookings.Count()
