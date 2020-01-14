@@ -33,6 +33,8 @@ namespace ThAmCo.Events.Controllers
             }
 
             var staff = await _context.Staff
+                .Include(e => e.StaffBooking)
+                .ThenInclude(e => e.Event)
                 .FirstOrDefaultAsync(m => m.StaffId == id);
             if (staff == null)
             {

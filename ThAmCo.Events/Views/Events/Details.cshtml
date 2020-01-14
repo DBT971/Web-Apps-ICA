@@ -75,6 +75,45 @@
     </tbody>
 </table>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StaffBookings.FirstOrDefault().Staff.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StaffBookings.FirstOrDefault().Staff.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StaffBookings.FirstOrDefault().Staff.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StaffBookings.FirstOrDefault().Staff.FirstAider)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.StaffBookings)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Staff.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Staff.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Staff.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Staff.FirstAider)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
     <div>
         <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
         <a asp-action="Index">Back to List</a>

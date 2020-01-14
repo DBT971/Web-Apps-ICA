@@ -58,6 +58,12 @@
                     Warning: There is not enough staff at the event
                 </p>
                 }
+                @if ((item.StaffBookings.Where(e => e.Staff.FirstAider).Count() == 0))
+                {
+                    <p>
+                        Warning: There is no staff with first aid training at the event.
+                    </p>
+                }
             </td>
             <td>
                 @item.Bookings.Count()
