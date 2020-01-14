@@ -24,7 +24,7 @@ namespace ThAmCo.Events.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Events.Include(s => s.Bookings).Include(s => s.StaffBookings).ToListAsync());
+            return View(await _context.Events.Include(s => s.Bookings).Include(s => s.StaffBookings).ThenInclude(s => s.Staff).ToListAsync());
         }
 
         // GET: Events/Details/5
@@ -44,6 +44,7 @@ namespace ThAmCo.Events.Controllers
                 .ThenInclude(c => c.Customer)
                 .Include(s => s.StaffBookings)
                 .ThenInclude(s => s.Staff)
+                .Include(b => b.VenueCode)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (@event == null)
@@ -273,6 +274,44 @@ namespace ThAmCo.Events.Controllers
             return View(@event);
         }
 
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var @event = await _context.Events.Include(e => e.StaffBookings).FirstOrDefaultAsync(m => m.Id == id);
+
+            if (@event.VenueCode != null)
+            {
+                HttpClient client1 = new HttpClient();
+
+                var VenueBuilder = new UriBuilder("http://localhost");
+                VenueBuilder.Port = 23652;
+                VenueBuilder.Path = "api/Reservations/" + @event.VenueCode;
+                client1.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+                string url = VenueBuilder.ToString();
+
+
+                HttpResponseMessage response1 = await client1.DeleteAsync(url);
+
+                if (response1.IsSuccessStatusCode)
+                {
+                    @event.VenueCode = null;
+
+                    _context.Update(@event);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            if (@event.StaffBookings.Count() > 0)
+            {
+                foreach(StaffBooking s in @event.StaffBookings)
+                {
+                    _context.Remove(s);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
         // POST: Events/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -295,12 +334,13 @@ namespace ThAmCo.Events.Controllers
 
                 if (response1.IsSuccessStatusCode)
                 {
-
                     @event.VenueCode = null;
+
                     _context.Update(@event);
                     await _context.SaveChangesAsync();
                 }
             }
+            
 
             _context.Events.Remove(@event);
             await _context.SaveChangesAsync();
