@@ -88,9 +88,9 @@ namespace ThAmCo.Events.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Surname,FirstName,Email")] Customer customer)
+        public async Task<IActionResult> Edit(int Id, [Bind("Id,Surname,FirstName,Email")] Customer customer)
         {
-            if (id != customer.Id)
+            if (Id != customer.Id)
             {
                 return NotFound();
             }
@@ -136,6 +136,23 @@ namespace ThAmCo.Events.Controllers
             return View(customer);
         }
 
+        // POST: Customers/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            _context.Remove(customer);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool CustomerExists(int id)
+        {
+            return _context.Customers.Any(e => e.Id == id);
+        }
+
         // GET: Customers/Delete/5
         public async Task<IActionResult> PermanentDelete(int? id)
         {
@@ -157,22 +174,6 @@ namespace ThAmCo.Events.Controllers
             _context.Update(customer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var customer = await _context.Customers.FindAsync(id);
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.Id == id);
         }
     }
 }

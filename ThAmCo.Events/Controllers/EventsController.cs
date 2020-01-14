@@ -39,13 +39,7 @@ namespace ThAmCo.Events.Controllers
              * The if statement returns not Found as in order to reach that an event would have to exist
              * with no customers or bookings.
              */
-            var @event = await _context.Events
-                .Include(b => b.Bookings)
-                .ThenInclude(c => c.Customer)
-                .Include(s => s.StaffBookings)
-                .ThenInclude(s => s.Staff)
-                .Include(b => b.VenueCode)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var @event = await _context.Events.Include(b => b.Bookings).ThenInclude(c => c.Customer).Include(s => s.StaffBookings).ThenInclude(s => s.Staff).FirstOrDefaultAsync(m => m.Id == id);
 
             if (@event == null)
             {
